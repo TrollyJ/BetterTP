@@ -1,0 +1,11 @@
+name: BetterTP
+
+author: TrollyJ
+
+main: BetterTP
+
+commands:
+    btp:
+        description: Teleport
+
+version: 0.1
