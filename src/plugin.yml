@@ -6,6 +6,10 @@ main: BetterTP
 
 commands:
     btp:
-        description: Teleport
+        description: Teleports you to player.
+        usage: /<command> <player>
+    back:
+        description: Teleports you to place from which you have teleported.
+        usage: /<command>
 
 version: 0.1
