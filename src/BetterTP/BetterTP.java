@@ -47,7 +47,7 @@ public class BetterTP extends JavaPlugin {
         
         try {
         player.teleport(playerToTpLoc);
-        } catch (Exception e) {
+        } catch (Exception a) {
             player.sendMessage("This player is not online");
         }
         
