@@ -2,7 +2,7 @@ name: BetterTP
 
 author: TrollyJ
 
-main: BetterTP
+main: BetterTP.BetterTP
 
 commands:
     btp:
@@ -12,4 +12,4 @@ commands:
         description: Teleports you to place from which you have teleported.
         usage: /<command>
 
-version: 0.1
+version: 0.2a
