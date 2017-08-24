@@ -11,5 +11,14 @@ commands:
     back:
         description: Teleports you to place from which you have teleported.
         usage: /<command>
+    btpa:
+        description: Sends TP request to target player.
+        usage: /<command> <player>
+    btpaccept:
+        description: Accepts TP request from player.
+        usage: /<command> <player>
+    btpdeny:
+        description: Denies TP requst from player.
+        usage: /<command> <player>
 
-version: 0.3a
+version: 0.4
