@@ -25,13 +25,17 @@ public class BetterTP extends JavaPlugin {
     public boolean onCommand (CommandSender sender, Command command, String navesti, String[] arguments) {
         if (navesti.equalsIgnoreCase("btp")) {                          // for command /btp
             if (sender instanceof Player) {
-                if (arguments.length > 0) {
-                    String playerToTp = arguments[0];
-                    doBTP(sender, playerToTp);
+                if (arguments.length == 0) {
+                    doBTP(sender, arguments[0]);
                     return true;
+                    
+                } else if (arguments.length == 3) {
+                    
+                    doBTPLoc(sender ,arguments[0], arguments[1], arguments[2]);
+                    return true;
+                    
                 } else {
-                    BTPNoPlayer(sender, 0);
-                    return true;
+                    BTPNoPlayer(sender, 2);
                 }
             }
         }
@@ -95,7 +99,23 @@ public class BetterTP extends JavaPlugin {
         } catch (Exception e) {
             sender.sendMessage(BOLDDARKRED + "This player is not online");
         }
-            
+    }
+    
+    public void doBTPLoc (CommandSender sender, String sX, String sY, String sZ) { //teleports player to taget location (to coordinates)
+        Player player = (Player) sender;
+        Location loc = new Location(player.getWorld(), Double.parseDouble(sX), Double.parseDouble(sY), Double.parseDouble(sZ));
+        
+        if (backLoc.containsKey(player)) {
+            backLoc.replace(player, player.getLocation());
+            } else {
+            backLoc.put(player, player.getLocation());
+            }
+        player.teleport(loc);
+        player.sendMessage(GREEN + "You have teleported to " + BOLDDARKRED + Integer.parseInt(sX) + " " + Integer.parseInt(sY) + " " + Integer.parseInt(sZ));
+        LoggerOutput(sender);
+        
+        player = null;
+        loc = null;
     }
     
     public void back (CommandSender sender) { //teleports you back to the location from which you have teleported last time
@@ -112,6 +132,7 @@ public class BetterTP extends JavaPlugin {
         
         player = null;
         
+        
     }
     
     public void BTPNoPlayer (CommandSender sender, int index) { //sends and error message when there is no player specified to teleport
@@ -122,6 +143,7 @@ public class BetterTP extends JavaPlugin {
                     break;
             case 1: sender.sendMessage(BOLDDARKRED + "Specify a player from which request came");
                     break;
+            case 2: sender.sendMessage(BOLDDARKRED + "Specify coordinates to teleport to");
         }
         
     }
@@ -133,7 +155,8 @@ public class BetterTP extends JavaPlugin {
             TpRequest tpRequest = new TpRequest(rSend, rAcc, true);
             TpRequest.put(rSend.getName() + rAcc.getName(), tpRequest);
             rSend.sendMessage(GREEN + "Request sent to " + BOLDDARKRED + rAcc.getName() + ChatColor.RESET + GREEN +"\n" + "Request will time out in 30 seconds");
-            rAcc.sendMessage(GREEN + "You have received teleport reuqest from " + BOLDDARKRED + rSend.getName());
+            rAcc.sendMessage(GREEN + "You have received teleport reuqest from " + BOLDDARKRED + rSend.getName() + ChatColor.RESET + GREEN + "\n" + "Type " + BOLDDARKRED + 
+            "/btpaccept" + ChatColor.RESET + GREEN + "to accept the request \n" );
             requestTimeOut(rSend, rAcc, tpRequest);
             
             tpRequest = null;
