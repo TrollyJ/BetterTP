@@ -7,7 +7,7 @@ main: BetterTP.BetterTP
 commands:
     btp:
         description: Teleports you to player.
-        usage: /<command> <player>
+        usage: /<command> <player || coordinates>
     back:
         description: Teleports you to place from which you have teleported.
         usage: /<command>
@@ -20,5 +20,8 @@ commands:
     btpdeny:
         description: Denies TP requst from player.
         usage: /<command> <player>
+    btprandom:
+        description: Teleports you randomly in current world.
+        usage: /<command>
 
-version: 0.5
+version: 0.6a

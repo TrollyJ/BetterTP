@@ -6,6 +6,8 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import static org.bukkit.Material.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,17 +27,18 @@ public class BetterTP extends JavaPlugin {
     public boolean onCommand (CommandSender sender, Command command, String navesti, String[] arguments) {
         if (navesti.equalsIgnoreCase("btp")) {                          // for command /btp
             if (sender instanceof Player) {
-                if (arguments.length == 0) {
+                if (arguments.length == 1) {
                     doBTP(sender, arguments[0]);
                     return true;
                     
                 } else if (arguments.length == 3) {
-                    
+    
                     doBTPLoc(sender ,arguments[0], arguments[1], arguments[2]);
                     return true;
                     
                 } else {
                     BTPNoPlayer(sender, 2);
+                    
                 }
             }
         }
@@ -76,6 +79,12 @@ public class BetterTP extends JavaPlugin {
                     BTPNoPlayer(sender, 1);
                     return true;
                 }
+            }
+        }
+        if (navesti.equalsIgnoreCase("btprandom")) {                    //for command /btprandom
+            if (sender instanceof Player) {
+                randomTp(sender);
+                return true;
             }
         }
         return false;
@@ -143,7 +152,7 @@ public class BetterTP extends JavaPlugin {
                     break;
             case 1: sender.sendMessage(BOLDDARKRED + "Specify a player from which request came");
                     break;
-            case 2: sender.sendMessage(BOLDDARKRED + "Specify coordinates to teleport to");
+            case 2: sender.sendMessage(BOLDDARKRED + "Specify player or coordinates to teleport to");
         }
         
     }
@@ -267,6 +276,63 @@ public class BetterTP extends JavaPlugin {
         LOG.info(playTp.getName() + " has teleported to " + x + " " + y + " " + z);
         
         playTp = null;
+        
+    }
+    
+    public void randomTp (CommandSender sender) { //teleports player to random place in the world in which is the player
+        
+        Player player = (Player) sender;
+        int x = (int) (Math.random()*10000 + Math.random()*1000 + Math.random()*100 + Math.random()*10 + Math.random());
+        int z = (int) (Math.random()*10000 + Math.random()*1000 + Math.random()*100 + Math.random()*10 + Math.random());
+        int y = top(sender, x, z);
+        Location tpLoc = new Location(player.getWorld(), x, y, z);
+        
+        if (y == Integer.MAX_VALUE) {
+            player.sendMessage(GREEN + "You have been saved from teleporting there :)");
+            return;
+        }
+        
+        
+        if (backLoc.containsKey(player)) {
+            backLoc.replace(player, player.getLocation());
+            } else {
+            backLoc.put(player, player.getLocation());
+            }
+        
+        player.teleport(tpLoc);
+        
+        player = null;
+        tpLoc = null;
+        
+        LoggerOutput(sender);
+        
+    }
+    
+    public int top (CommandSender sender ,int x, int z) { //gets the first block of air at the top of the world, prevents suffering
+        Player player = (Player) sender;
+        
+        Location loc = new Location(player.getWorld(), x, 15, z);
+        Location lavaLoc = loc;
+        
+        while (loc.getBlock().getType() != AIR) {
+            loc.add(0, 1, 0);
+            lavaLoc = loc;
+        }
+        if (loc.add(0, 1, 0).getBlock().getType() == AIR && lavaLoc.getBlock().getType() != LAVA && loc.getBlock().getType() != LAVA) {
+            int Y = (int) loc.getY();
+            player = null;
+            loc = null;
+            lavaLoc = null;
+            return Y;
+        } else {
+            player = null;
+            loc = null;
+            lavaLoc = null;
+            return Integer.MAX_VALUE;
+        }
+        
+        
+        
         
     }
     
