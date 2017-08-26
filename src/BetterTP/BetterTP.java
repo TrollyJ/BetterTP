@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import static org.bukkit.Material.*;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,6 +25,10 @@ public class BetterTP extends JavaPlugin {
     @Override
     public boolean onCommand (CommandSender sender, Command command, String navesti, String[] arguments) {
         if (navesti.equalsIgnoreCase("btp")) {                          // for command /btp
+            if (!sender.hasPermission("bettertp.teleport")) {
+                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                return true;
+            }
             if (sender instanceof Player) {
                 if (arguments.length == 1) {
                     doBTP(sender, arguments[0]);
@@ -43,12 +46,20 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("back")) {                         //for command /back
+            if (!sender.hasPermission("bettertp.back")) {
+                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                return true;
+            }
             if (sender instanceof Player) {
                 back(sender);
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpa")) {                         //for command /btpa
+            if (!sender.hasPermission("bettertp.btpa")) {
+                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                return true;
+            }
             if (sender instanceof Player) {
                 if (arguments.length > 0) {
                     doTPRequest(sender, arguments[0]);
@@ -60,6 +71,10 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btpaccept")) {                    //for command /btpaccept
+            if (!sender.hasPermission("bettertp.btpaccept")) {
+                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                return true;
+            }
             if (sender instanceof Player) {
                 if (arguments.length > 0) {
                     doTpAccept(sender, arguments[0]);
@@ -71,6 +86,10 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btpdeny")) {                      //for command /btpdeny                   
+            if (!sender.hasPermission("bettertp.btpdeny")) {
+                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                return true;
+            }
             if (sender instanceof Player) {
                 if (arguments.length > 0) {
                     doTpDeny(sender, arguments[0]);
@@ -82,6 +101,10 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btprandom")) {                    //for command /btprandom
+            if (!sender.hasPermission("bettertp.random")) {
+                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                return true;
+            }
             if (sender instanceof Player) {
                 randomTp(sender);
                 return true;
@@ -282,8 +305,10 @@ public class BetterTP extends JavaPlugin {
     public void randomTp (CommandSender sender) { //teleports player to random place in the world in which is the player
         
         Player player = (Player) sender;
-        int x = (int) (Math.random()*10000 + Math.random()*1000 + Math.random()*100 + Math.random()*10 + Math.random());
-        int z = (int) (Math.random()*10000 + Math.random()*1000 + Math.random()*100 + Math.random()*10 + Math.random());
+        int X = (int) (Math.random() * 10000);
+        int Z = (int) (Math.random()*10000);
+        double x = X + 0.5;
+        double z = Z + 0.5;
         int y = top(sender, x, z);
         Location tpLoc = new Location(player.getWorld(), x, y, z);
         
@@ -308,7 +333,7 @@ public class BetterTP extends JavaPlugin {
         
     }
     
-    public int top (CommandSender sender ,int x, int z) { //gets the first block of air at the top of the world, prevents suffering
+    public int top (CommandSender sender ,double x, double z) { //gets the first block of air at the top of the world, prevents suffering
         Player player = (Player) sender;
         
         Location loc = new Location(player.getWorld(), x, 15, z);

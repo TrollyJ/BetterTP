@@ -23,5 +23,33 @@ commands:
     btprandom:
         description: Teleports you randomly in current world.
         usage: /<command>
+        
+permissions:
+    bettertp.*:
+        default: op
+        description: Allows all commands
+        children:
+            bettertp.teleport: true
+            bettertp.btprequest: true
+            bettertp.random: true
+            bettertp.back: true
+    bettertp.teleport:
+        description: Allows command /btp
+    betterp.request:
+        description: Allows comands /btpa, /btpaccept, /btpdeny
+        children:
+            bettertp.btpa: true
+            bettertp.btpaccept: true
+            bettertp.btpdeny: true
+    bettertp.btpa:
+        description: Allows command /btpa
+    bettetp.btpaccept: 
+        description: Allows command /btpaccept
+    bettetp.btpdeny:
+        description: Allows command /btpdeny
+    bettertp.random:
+        description: Allows command /btprandom
+    bettertp.back:
+        description: Allows command /back
 
-version: 0.6a
+version: 0.7
