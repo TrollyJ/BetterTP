@@ -23,6 +23,9 @@ commands:
     btprandom:
         description: Teleports you randomly in current world.
         usage: /<command>
+    btpallow:
+        description: Allows a command in this world. To confirm it just write /btpforbid confirm
+        usage: /<command> <command to remove || confirm>
         
 permissions:
     bettertp.*:
@@ -33,6 +36,7 @@ permissions:
             bettertp.btprequest: true
             bettertp.random: true
             bettertp.back: true
+            bettertp.setperm: true
     bettertp.teleport:
         description: Allows command /btp
     betterp.request:
@@ -41,6 +45,7 @@ permissions:
             bettertp.btpa: true
             bettertp.btpaccept: true
             bettertp.btpdeny: true
+        default: true
     bettertp.btpa:
         description: Allows command /btpa
     bettetp.btpaccept: 
@@ -51,5 +56,7 @@ permissions:
         description: Allows command /btprandom
     bettertp.back:
         description: Allows command /back
+    bettertp.setperm:
+        description: Allows command /btpforbid
 
-version: 0.7
+version: 0.8
