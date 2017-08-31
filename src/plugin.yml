@@ -62,4 +62,4 @@ permissions:
     bettertp.bypass:
         description: Allows to by bypass world permissions
 
-version: 0.8
+version: 0.9

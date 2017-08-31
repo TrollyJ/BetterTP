@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
+import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -34,8 +35,9 @@ public class BetterTP extends JavaPlugin {
     
     @Override
     public void onEnable() {
-        getWorlds();
+        Updater update = new Updater(this, 275467, getFile(), Updater.UpdateType.DEFAULT, true);
         
+        getWorlds();
     }
     
     @Override
