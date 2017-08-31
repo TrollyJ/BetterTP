@@ -35,6 +35,7 @@ public class BetterTP extends JavaPlugin {
     @Override
     public void onEnable() {
         getWorlds();
+        
     }
     
     @Override
@@ -46,7 +47,7 @@ public class BetterTP extends JavaPlugin {
     public boolean onCommand (CommandSender sender, Command command, String navesti, String[] arguments) {
         
         if (navesti.equalsIgnoreCase("btp")) {                          // for command /btp
-            if (getWorldPerm(sender, "btp")) {
+            if (getWorldPerm(sender, "btp") || sender.hasPermission("bettertp.bypass")) {
                 if (!sender.hasPermission("bettertp.teleport")) {
                     sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
                     return true;
@@ -71,7 +72,7 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("back")) {                         //for command /back
-            if (getWorldPerm(sender, "back")) {
+            if (getWorldPerm(sender, "back")  || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.back")) {
                 sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
                 return true;
@@ -86,7 +87,7 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btpa")) {                         //for command /btpa
-            if (getWorldPerm(sender, "btpa")) {
+            if (getWorldPerm(sender, "btpa") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpa")) {
                 sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
                 return true;
@@ -106,7 +107,7 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btpaccept")) {                    //for command /btpaccept
-            if (getWorldPerm(sender, "btpaccept")) {
+            if (getWorldPerm(sender, "btpaccept") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpaccept")) {
                 sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
                 return true;
@@ -126,7 +127,7 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btpdeny")) {                      //for command /btpdeny                   
-            if (getWorldPerm(sender, "btpdeny")) {
+            if (getWorldPerm(sender, "btpdeny") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpdeny")) {
                 sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
                 return true;
@@ -146,7 +147,7 @@ public class BetterTP extends JavaPlugin {
             }
         }
         if (navesti.equalsIgnoreCase("btprandom")) {                    //for command /btprandom
-            if (getWorldPerm(sender, "btprandom")) {
+            if (getWorldPerm(sender, "btprandom") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.random")) {
                 sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
                 return true;
@@ -348,7 +349,7 @@ public class BetterTP extends JavaPlugin {
         
         playTpLoc = null;
         
-        LOG.info(playTp.getName() + " has teleported to " + x + " " + y + " " + z);
+        LOG.info("[BetterTP ]" + playTp.getName() + " has teleported to " + x + " " + y + " " + z);
         
         playTp = null;
         
@@ -366,7 +367,7 @@ public class BetterTP extends JavaPlugin {
         
         playTpLoc = null;
         
-        LOG.info(playTp.getName() + " has teleported to " + x + " " + y + " " + z);
+        LOG.info("[BetterTP] " + playTp.getName() + " has teleported to " + x + " " + y + " " + z);
         
         playTp = null;
         
@@ -546,6 +547,5 @@ public class BetterTP extends JavaPlugin {
         timer = null;
         
     }
-    
 }
     

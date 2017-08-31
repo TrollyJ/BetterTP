@@ -37,6 +37,7 @@ permissions:
             bettertp.random: true
             bettertp.back: true
             bettertp.setperm: true
+            bettertp.bypass: true
     bettertp.teleport:
         description: Allows command /btp
     betterp.request:
@@ -57,6 +58,8 @@ permissions:
     bettertp.back:
         description: Allows command /back
     bettertp.setperm:
-        description: Allows command /btpforbid
+        description: Allows command /btpallow
+    bettertp.bypass:
+        description: Allows to by bypass world permissions
 
 version: 0.8
