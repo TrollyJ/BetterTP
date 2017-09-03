@@ -26,6 +26,9 @@ commands:
     btpallow:
         description: Allows a command in this world. To confirm it just write /btpforbid confirm
         usage: /<command> <command to remove || confirm>
+    btphere:
+        description: Teleports specified player to you.
+        usage: /<command> <player>
         
 permissions:
     bettertp.*:
@@ -38,6 +41,7 @@ permissions:
             bettertp.back: true
             bettertp.setperm: true
             bettertp.bypass: true
+            bettetp.tphere: true
     bettertp.teleport:
         description: Allows command /btp
     betterp.request:
@@ -61,5 +65,7 @@ permissions:
         description: Allows command /btpallow
     bettertp.bypass:
         description: Allows to by bypass world permissions
+    bettertp.tphere:
+        description: Allows command /btphere
 
-version: 0.9
+version: 0.92

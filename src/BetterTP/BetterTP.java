@@ -25,6 +25,7 @@ public class BetterTP extends JavaPlugin {
     private static final String BOLDDARKRED = ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString();
     private static final String GREEN = ChatColor.GREEN.toString();
     private WorldPermWriter wpw = null;
+    private static final String RED = ChatColor.RED.toString();
     
     
     HashMap<Player, Location> backLoc = new HashMap();
@@ -51,7 +52,7 @@ public class BetterTP extends JavaPlugin {
         if (navesti.equalsIgnoreCase("btp")) {                          // for command /btp
             if (getWorldPerm(sender, "btp") || sender.hasPermission("bettertp.bypass")) {
                 if (!sender.hasPermission("bettertp.teleport")) {
-                    sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                    sender.sendMessage(RED + "You are not permitted do that!");
                     return true;
                 }
                     if (sender instanceof Player) {
@@ -69,14 +70,14 @@ public class BetterTP extends JavaPlugin {
                     }
                 }
             } else if (!getWorldPerm(sender, "btp")){
-                sender.sendMessage(ChatColor.RED + "You can't use this command in this world");
+                sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("back")) {                         //for command /back
             if (getWorldPerm(sender, "back")  || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.back")) {
-                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                sender.sendMessage(RED + "You are not permitted do that!");
                 return true;
             }
             if (sender instanceof Player) {
@@ -84,14 +85,14 @@ public class BetterTP extends JavaPlugin {
                 return true;
             }
             } else if (!getWorldPerm(sender, "back")){
-                sender.sendMessage(ChatColor.RED + "You can't use this command in this world");
+                sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpa")) {                         //for command /btpa
             if (getWorldPerm(sender, "btpa") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpa")) {
-                sender.sendMessage(BOLDDARKRED + "You are not permitted do that!");
+                sender.sendMessage(RED + "You are not permitted do that!");
                 return true;
             }
             if (sender instanceof Player) {
@@ -104,14 +105,14 @@ public class BetterTP extends JavaPlugin {
                 } 
                 }
             } else if (!getWorldPerm(sender, "btpa")){
-                sender.sendMessage(ChatColor.RED + "You can't use this command in this world");
+                sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpaccept")) {                    //for command /btpaccept
             if (getWorldPerm(sender, "btpaccept") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpaccept")) {
-                sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
+                sender.sendMessage(RED + "You are not permitted to do that!");
                 return true;
             }
             if (sender instanceof Player) {
@@ -124,14 +125,14 @@ public class BetterTP extends JavaPlugin {
                 }
                 }
             } else if (!getWorldPerm(sender, "btpaccept")){
-                sender.sendMessage(ChatColor.RED + "You can't use this command in this world");
+                sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpdeny")) {                      //for command /btpdeny                   
             if (getWorldPerm(sender, "btpdeny") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpdeny")) {
-                sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
+                sender.sendMessage(RED + "You are not permitted to do that!");
                 return true;
             }
             if (sender instanceof Player) {
@@ -144,14 +145,14 @@ public class BetterTP extends JavaPlugin {
                 }
                 }
             } else if (!getWorldPerm(sender, "btpdeny")){
-                sender.sendMessage(ChatColor.RED + "You can't use this command in this world");
+                sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btprandom")) {                    //for command /btprandom
             if (getWorldPerm(sender, "btprandom") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.random")) {
-                sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
+                sender.sendMessage(RED + "You are not permitted to do that!");
                 return true;
             }
             if (sender instanceof Player) {
@@ -159,13 +160,13 @@ public class BetterTP extends JavaPlugin {
                 return true;
             }
             } else if (!getWorldPerm(sender, "btprandom")) {
-                sender.sendMessage(ChatColor.RED + "You can't use this command in this world");
+                sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         } 
         if (navesti.equalsIgnoreCase("btpallow")) {
             if(!sender.hasPermission("bettertp.setperm")) {
-                sender.sendMessage(BOLDDARKRED + "You are not permitted to do that!");
+                sender.sendMessage(RED + "You are not permitted to do that!");
                 return true;
             }
             if (arguments.length == 1 && arguments[0].equalsIgnoreCase("confirm")) {
@@ -173,13 +174,25 @@ public class BetterTP extends JavaPlugin {
                     permChangeConfirm(sender);
                     return true;
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No world permissions to confirm or bad usage of command");
+                    sender.sendMessage(RED + "No world permissions to confirm or bad usage of command");
                     return false;
                 }
             }
-            if (arguments.length == 1 && (arguments[0].equalsIgnoreCase("btp") ||arguments[0].equalsIgnoreCase("btpa") || arguments[0].equalsIgnoreCase("btpaccept") || arguments[0].equalsIgnoreCase("btpdeny") || arguments[0].equalsIgnoreCase("btprandom") || arguments[0].equalsIgnoreCase("back"))) {
+            if (arguments.length == 1 && (arguments[0].equalsIgnoreCase("btp") || arguments[0].equalsIgnoreCase("btpa") || arguments[0].equalsIgnoreCase("btpaccept") || arguments[0].equalsIgnoreCase("btpdeny") || arguments[0].equalsIgnoreCase("btprandom") || arguments[0].equalsIgnoreCase("back") || arguments[0].equalsIgnoreCase("btphere"))) {
                 setPerm(sender, arguments[0]);
                 return true;
+            }
+        }
+        if (navesti.equals("btphere")) {
+            if (sender instanceof Player) {
+                if (!sender.hasPermission("bettertp.tphere")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
+                    return true;
+                }
+                if (arguments.length == 1) {
+                    tpHere(sender, arguments[0]);
+                    return true;
+                }
             }
         }
         return false;
@@ -193,6 +206,8 @@ public class BetterTP extends JavaPlugin {
             backLoc.put(player, player.getLocation());
                 
             player.teleport(getServer().getPlayer(playerToTP));
+            
+            player.sendMessage(GREEN + "You have teleported to " + BOLDDARKRED + getServer().getPlayer(playerToTP).getName());
             
             if (loc1 != player.getLocation()) {
             LoggerOutput(sender);
@@ -351,7 +366,7 @@ public class BetterTP extends JavaPlugin {
         
         playTpLoc = null;
         
-        LOG.info("[BetterTP ]" + playTp.getName() + " has teleported to " + x + " " + y + " " + z);
+        LOG.info("[BetterTP] " + playTp.getName() + " has teleported to " + x + " " + y + " " + z);
         
         playTp = null;
         
@@ -549,5 +564,19 @@ public class BetterTP extends JavaPlugin {
         timer = null;
         
     }
+    
+    public void tpHere (CommandSender sender, String playerTeleported) {
+        
+        Player player = (Player) sender;
+        Location pLoc = player.getLocation();
+        try {
+        getServer().getPlayer(playerTeleported).teleport(pLoc);
+        LOG.info(getServer().getPlayer(playerTeleported).getName() + "was teleported to " + pLoc.getX() + " " + pLoc.getY() + " " + + pLoc.getZ() + " by " + player.getName());
+        sender.sendMessage(GREEN + "You have teleported " + BOLDDARKRED + getServer().getPlayer(playerTeleported).getName() + ChatColor.RESET + GREEN + " to you");
+        } catch (NullPointerException e) {
+            sender.sendMessage(BOLDDARKRED + "This player is not online");
+        }
+    }
+    
 }
     

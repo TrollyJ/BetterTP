@@ -24,7 +24,7 @@ public class WorldPermDefault {
     public void writeDefault() {
         List<World> worlds = Bukkit.getServer().getWorlds();
         
-        String content = "btp\nbtpa\nbtpaccept\nbtpdeny\nbtprandom\nback";
+        String content = "btp\nbtpa\nbtpaccept\nbtpdeny\nbtprandom\nback\nbtphere";
         
         try {
             int a = 1;
