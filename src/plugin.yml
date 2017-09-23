@@ -23,12 +23,21 @@ commands:
     btprandom:
         description: Teleports you randomly in current world.
         usage: /<command>
-    btpallow:
-        description: Allows a command in this world. To confirm it just write /btpforbid confirm
-        usage: /<command> <command to remove || confirm>
     btphere:
         description: Teleports specified player to you.
         usage: /<command> <player>
+    bsetwp:
+        description: Sets world permission for command.
+        usage: /<command> <commandToAllow> <true||false>
+    bsethome:
+        description: Sets home at current position.
+        usage: /<command>
+    bdelhome:
+        description: Deletes home.
+        usage: /<command>
+    bhome:
+        description: Teleports you home.
+        usage: /<command>
         
 permissions:
     bettertp.*:
@@ -44,7 +53,7 @@ permissions:
             bettetp.tphere: true
     bettertp.teleport:
         description: Allows command /btp
-    betterp.request:
+    betterp.btprequest:
         description: Allows comands /btpa, /btpaccept, /btpdeny
         children:
             bettertp.btpa: true
@@ -62,10 +71,22 @@ permissions:
     bettertp.back:
         description: Allows command /back
     bettertp.setperm:
-        description: Allows command /btpallow
+        description: Allows command /bsetwp
     bettertp.bypass:
         description: Allows to by bypass world permissions
     bettertp.tphere:
         description: Allows command /btphere
+    bettertp.homeperm:
+        description: Allows all commands related to home.
+        children:
+            bettertp.sethome: true
+            bettertp.delhome: true
+            bettertp.home: true
+    bettertp.sethome:
+        description: Allows command /bsethome
+    bettertp.delhome:
+        description: Allows command /bdelhome
+    bettertp.home:
+        description: Allows command /bhome
 
-version: 0.92
+version: 1.00

@@ -4,28 +4,36 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.gravitydevelopment.updater.Updater;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import static org.bukkit.Material.*;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BetterTP extends JavaPlugin {
     
-    private static final String BOLDDARKRED = ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString();
-    private static final String GREEN = ChatColor.GREEN.toString();
-    private WorldPermWriter wpw = null;
-    private static final String RED = ChatColor.RED.toString();
+    private static final String BOLDDARKRED = ChatColor.RESET.toString() + ChatColor.DARK_RED.toString() + ChatColor.BOLD.toString();
+    private static final String GREEN = ChatColor.RESET.toString() + ChatColor.GREEN.toString();
+    private static final String RED = ChatColor.RESET.toString() + ChatColor.RED.toString();
+    FileConfiguration homes = new YamlConfiguration();
+    File homesFile;
+    FileConfiguration config;
+    Plugin plugin;
     
     
     HashMap<Player, Location> backLoc = new HashMap();
@@ -37,20 +45,39 @@ public class BetterTP extends JavaPlugin {
     @Override
     public void onEnable() {
         Updater update = new Updater(this, 275467, getFile(), Updater.UpdateType.DEFAULT, true);
+        homesFile = new File(getDataFolder(), "homes.yml");
         
-        getWorlds();
+        createConfigFile();
+        
+        if (!homesFile.exists()) {
+            try {
+                homesFile.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try {
+            homes.load(homesFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (InvalidConfigurationException ex) {
+            ex.printStackTrace();
+        }
+        
     }
     
     @Override
     public void onDisable() {
-        
+        LOG.info("[BetterTP] Plugin by TrollyJ.");
     }
     
     @Override
     public boolean onCommand (CommandSender sender, Command command, String navesti, String[] arguments) {
         
+        Player p = (Player) sender;
+        
         if (navesti.equalsIgnoreCase("btp")) {                          // for command /btp
-            if (getWorldPerm(sender, "btp") || sender.hasPermission("bettertp.bypass")) {
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".btp") || sender.hasPermission("bettertp.bypass")) {
                 if (!sender.hasPermission("bettertp.teleport")) {
                     sender.sendMessage(RED + "You are not permitted do that!");
                     return true;
@@ -69,13 +96,13 @@ public class BetterTP extends JavaPlugin {
                             BTPNoPlayer(sender, 2);
                     }
                 }
-            } else if (!getWorldPerm(sender, "btp")){
+            } else {
                 sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("back")) {                         //for command /back
-            if (getWorldPerm(sender, "back")  || sender.hasPermission("bettertp.bypass")) {
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".back") || sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.back")) {
                 sender.sendMessage(RED + "You are not permitted do that!");
                 return true;
@@ -84,13 +111,13 @@ public class BetterTP extends JavaPlugin {
                 back(sender);
                 return true;
             }
-            } else if (!getWorldPerm(sender, "back")){
+            } else {
                 sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpa")) {                         //for command /btpa
-            if (getWorldPerm(sender, "btpa") || sender.hasPermission("bettertp.bypass")) {
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".btpa")|| sender.hasPermission("bettertp.bypass")) {
             if (!sender.hasPermission("bettertp.btpa")) {
                 sender.sendMessage(RED + "You are not permitted do that!");
                 return true;
@@ -104,95 +131,128 @@ public class BetterTP extends JavaPlugin {
                     return true;
                 } 
                 }
-            } else if (!getWorldPerm(sender, "btpa")){
+            } else {
                 sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpaccept")) {                    //for command /btpaccept
-            if (getWorldPerm(sender, "btpaccept") || sender.hasPermission("bettertp.bypass")) {
-            if (!sender.hasPermission("bettertp.btpaccept")) {
-                sender.sendMessage(RED + "You are not permitted to do that!");
-                return true;
-            }
-            if (sender instanceof Player) {
-                if (arguments.length > 0) {
-                    doTpAccept(sender, arguments[0]);
-                    return true;
-                } else {
-                    BTPNoPlayer(sender, 1);
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".btpaccept") || sender.hasPermission("bettertp.bypass")) {
+                if (!sender.hasPermission("bettertp.btpaccept")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
                     return true;
                 }
+                if (sender instanceof Player) {
+                    if (arguments.length > 0) {
+                        doTpAccept(sender, arguments[0]);
+                        return true;
+                    } else {
+                        BTPNoPlayer(sender, 1);
+                        return true;
+                    }
                 }
-            } else if (!getWorldPerm(sender, "btpaccept")){
+            } else {
                 sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btpdeny")) {                      //for command /btpdeny                   
-            if (getWorldPerm(sender, "btpdeny") || sender.hasPermission("bettertp.bypass")) {
-            if (!sender.hasPermission("bettertp.btpdeny")) {
-                sender.sendMessage(RED + "You are not permitted to do that!");
-                return true;
-            }
-            if (sender instanceof Player) {
-                if (arguments.length > 0) {
-                    doTpDeny(sender, arguments[0]);
-                    return true;
-                } else {
-                    BTPNoPlayer(sender, 1);
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".btpdeny") || sender.hasPermission("bettertp.bypass")) {
+                if (!sender.hasPermission("bettertp.btpdeny")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
                     return true;
                 }
+                if (sender instanceof Player) {
+                    if (arguments.length > 0) {
+                        doTpDeny(sender, arguments[0]);
+                        return true;
+                    } else {
+                        BTPNoPlayer(sender, 1);
+                        return true;
+                    }
                 }
-            } else if (!getWorldPerm(sender, "btpdeny")){
+            } else {
                 sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         }
         if (navesti.equalsIgnoreCase("btprandom")) {                    //for command /btprandom
-            if (getWorldPerm(sender, "btprandom") || sender.hasPermission("bettertp.bypass")) {
-            if (!sender.hasPermission("bettertp.random")) {
-                sender.sendMessage(RED + "You are not permitted to do that!");
-                return true;
-            }
-            if (sender instanceof Player) {
-                randomTp(sender);
-                return true;
-            }
-            } else if (!getWorldPerm(sender, "btprandom")) {
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".btprandom") || sender.hasPermission("bettertp.bypass")) {
+                if (!sender.hasPermission("bettertp.random")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
+                    return true;
+                }
+                if (sender instanceof Player) {
+                    randomTp(sender);
+                    return true;
+                }
+            } else {
                 sender.sendMessage(RED + "You can't use this command in this world");
                 return true;
             }
         } 
-        if (navesti.equalsIgnoreCase("btpallow")) {
-            if(!sender.hasPermission("bettertp.setperm")) {
-                sender.sendMessage(RED + "You are not permitted to do that!");
-                return true;
-            }
-            if (arguments.length == 1 && arguments[0].equalsIgnoreCase("confirm")) {
-                if(this.wpw != null) {
-                    permChangeConfirm(sender);
-                    return true;
-                } else {
-                    sender.sendMessage(RED + "No world permissions to confirm or bad usage of command");
-                    return false;
-                }
-            }
-            if (arguments.length == 1 && (arguments[0].equalsIgnoreCase("btp") || arguments[0].equalsIgnoreCase("btpa") || arguments[0].equalsIgnoreCase("btpaccept") || arguments[0].equalsIgnoreCase("btpdeny") || arguments[0].equalsIgnoreCase("btprandom") || arguments[0].equalsIgnoreCase("back") || arguments[0].equalsIgnoreCase("btphere"))) {
-                setPerm(sender, arguments[0]);
-                return true;
+        
+        if (navesti.equalsIgnoreCase("btphere")) {
+            if (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".btphere") || sender.hasPermission("bettertp.bypass")) {
+                if (sender instanceof Player) {
+                    if (!sender.hasPermission("bettertp.tphere")) {
+                        sender.sendMessage(RED + "You are not permitted to do that!");
+                        return true;
+                    }
+                    if (arguments.length == 1) {
+                        tpHere(sender, arguments[0]);
+                        return true;
+                    }
+                }   
+            } else {
+                sender.sendMessage(RED + "You can't use this command in this world");
+                return false;
             }
         }
-        if (navesti.equals("btphere")) {
-            if (sender instanceof Player) {
-                if (!sender.hasPermission("bettertp.tphere")) {
+        if (navesti.equalsIgnoreCase("bsetwp")) {
+            if(sender instanceof Player) {
+                if (!sender.hasPermission("bettertp.setperm")) {
                     sender.sendMessage(RED + "You are not permitted to do that!");
                     return true;
                 }
-                if (arguments.length == 1) {
-                    tpHere(sender, arguments[0]);
+                if (arguments.length == 2) {
+                    setWorldPerm(sender, arguments[0], arguments[1]);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
+        if (navesti.equalsIgnoreCase("bsethome") && (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".bsethome") || sender.hasPermission("bettertp.bypass"))) {
+            if (sender instanceof Player) {
+                if (!sender.hasPermission("bettertp.sethome")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
                     return true;
                 }
+                setHome(sender);
+                return true;
+            }
+        }
+        if (navesti.equalsIgnoreCase("bdelhome") && (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".bdelhome") || sender.hasPermission("bettertp.bypass"))) {
+            if (sender instanceof Player) {
+                if (!sender.hasPermission("bettertp.delhome")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
+                    return true;
+                }
+                delHome(sender);
+                return true;
+            }
+        }
+        
+        if (navesti.equalsIgnoreCase("bhome") && (config.getBoolean("worldpermissions." + p.getWorld().getName() + ".bhome") || sender.hasPermission("bettertp.bypass"))) {
+            if (sender instanceof Player) {
+                if (!sender.hasPermission("bettertp.home")) {
+                    sender.sendMessage(RED + "You are not permitted to do that!");
+                    return true;
+                }
+                home(sender);
+                return true;
             }
         }
         return false;
@@ -451,46 +511,6 @@ public class BetterTP extends JavaPlugin {
         }
     }
     
-    public void getWorlds() {  //gets all worlds and saves it to hash map with index
-        
-        List<World> worlds = Bukkit.getWorlds();
-        try {
-            int a = 1;
-            int b = 0;
-            while (a <= worlds.size()) {
-                Worlds.put(b, worlds.get(b));
-                createWorldsFiles(Worlds.get(b));
-                a++;
-                b++;
-            }
-            
-        } catch (IndexOutOfBoundsException e){
-            
-        }
-        
-        worlds.clear();
-        
-    }
-    
-    public void createWorldsFiles (World world) { //creates one file for each world and saves to it default world permissions
-        
-        File dir;
-        String path = getFile().getPath();
-        String bpath = path.replace("BetterTP.jar", ""); 
-        dir = new File(bpath + "/BetterTP");
-        WorldPermDefault def = new WorldPermDefault(bpath);
-        def.writeDefault();
-        
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-      
-        dir = null;
-        path = null;
-        bpath = null;
-        def = null;
-    }
-    
     public boolean getWorldPerm (CommandSender sender, String command) {  //gets permissions for world, reads full file
         
         Player player = (Player) sender;
@@ -525,29 +545,6 @@ public class BetterTP extends JavaPlugin {
         return false;
     }
     
-    public void setPerm (CommandSender sender, String command) { //sets permissions which will be allowed
-        Player player = (Player) sender;
-        String path = getFile().getPath();
-        String bpath = path.replace("BetterTP.jar", ""); 
-        path = null;
-        if (wpw == null) {
-            this.wpw = new WorldPermWriter(player.getWorld(), bpath);
-        }
-        this.wpw.forbidPerm(command, sender);
-        
-        player = null;
-        path = null;
-        
-    }
-    
-    public void permChangeConfirm (CommandSender sender) { //allows setted permissions
-        
-        
-        this.wpw.reWrite();
-        this.wpw = null;
-        
-    }
-    
     public void invTimeOut (Player invulnerable) { //starts the timer when request will time out
         
         Timer timer = new Timer();
@@ -576,6 +573,127 @@ public class BetterTP extends JavaPlugin {
         } catch (NullPointerException e) {
             sender.sendMessage(BOLDDARKRED + "This player is not online");
         }
+    }
+    
+    public void createConfigFile () {
+        
+        plugin = this;
+        LOG.info("[BetterTP] Loading config...");
+        config = getConfig();
+        
+        if(!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
+        
+        File configFile = new File(getDataFolder(), "config.yml");
+        List<World> w = getServer().getWorlds();
+        
+        for (int i = 0; i <= w.size() - 1; i++) {
+            config.set("worldpermissions." + w.get(i).getName() + ".btp", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".btpa", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".btpaccept", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".btpdeny", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".btprandom", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".btphere", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".bsethome", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".bdelhome", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".bhome", true);
+            config.set("worldpermissions." + w.get(i).getName() + ".back", true);
+        }
+        
+        if (!configFile.exists()) {
+            saveConfig();
+        }
+        
+    }
+    
+    public void setWorldPerm (CommandSender sender, String command, String bo) {
+        
+        Player p = (Player) sender;
+        World w = p.getWorld();
+        
+        if (command.equalsIgnoreCase("btp")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("btpa")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("btpaccept")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("btpdeny")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("btprandom")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("btphere")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("back")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("bsethome")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("bdelhome")) {
+            //nothing needed to do
+        } else if (command.equalsIgnoreCase("bhome")) {
+            //nothing needed to do
+        } else {
+            p.sendMessage(RED + "Not valid command");
+            return;
+        }
+        
+        if (bo.equalsIgnoreCase("true")) {
+            config.set("worldpermissions." + w.getName() + "." + command, true);
+            sender.sendMessage(GREEN + "You have allowed /" + RED + command + GREEN + "in this world");
+            saveConfig();
+        } else if (bo.equalsIgnoreCase("false")) {
+            config.set("worldpermissions." + w.getName() + "." + command, false);
+            sender.sendMessage(GREEN + "You have forbidden /" + RED + command + GREEN + "in this world");
+            saveConfig();
+        } else {
+            p.sendMessage(RED + "Values allowed: true/false");
+        }
+    }
+    
+    public void setHome (CommandSender sender) {
+        
+        Player player = (Player) sender;
+        homes.set("home." + player.getName() , player.getLocation());
+        player.sendMessage(GREEN + "You have succesfully set home!");
+        saveHomes();
+        
+    }
+    
+    public void delHome (CommandSender sender) {
+        
+        Player player = (Player) sender;
+        
+        if (homes.contains("home." + player.getName())) {
+            homes.set("home." + sender.getName(), null);
+            player.sendMessage(GREEN + "You have succesfully deleted your home");
+            saveHomes();
+        } else {
+            player.sendMessage(RED + "You have not set home yet");
+        }
+        
+    }
+    
+    public void home (CommandSender sender) {
+        
+        Player player = (Player) sender;
+        
+        if (homes.contains("home." + player.getName())){
+            player.teleport((Location) (homes.get("home." + player.getName())));
+            player.sendMessage(GREEN + "You have been teleported home");
+        } else {
+            player.sendMessage(RED + "You have not set home yet!");
+        }
+        
+    }
+    
+    private void saveHomes () {
+        
+        try {
+            homes.save(homesFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
     }
     
 }
